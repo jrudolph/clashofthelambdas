@@ -20,19 +20,19 @@ package benchmarks {
   @State(Scope.Thread)
   class ClashOfLambdas {
 
-    var N : Int = _
-    var v : Array[Long] = _
-    var vHi : Array[Long] = _
-    var vLo : Array[Long] = _
-    var refs : Array[Ref] = _
+    var N: Int = _
+    var v: Array[Long] = _
+    var vHi: Array[Long] = _
+    var vLo: Array[Long] = _
+    var refs: Array[Ref] = _
 
     @Setup
-    def prepare() : Unit = {
+    def prepare(): Unit = {
       N = 10000000
-      v = (0 until N).map(i => i.toLong % 1000).toArray
-      vHi = (0 until 1000000).map(i => i.toLong).toArray
-      vLo = (0 until 10).map(i => i.toLong).toArray
-      refs = (0 until N).map(i => new Ref(i)).toArray
+      v = (0 until N).map(i ⇒ i.toLong % 1000).toArray
+      vHi = (0 until 1000000).map(i ⇒ i.toLong).toArray
+      vLo = (0 until 10).map(i ⇒ i.toLong).toArray
+      refs = (0 until N).map(i ⇒ new Ref(i)).toArray
     }
 
     ////////////////////////////////////////
@@ -40,9 +40,9 @@ package benchmarks {
     ////////////////////////////////////////
 
     @GenerateMicroBenchmark
-    def sumBaseline () : Long = {
-      var i=0
-      var sum=0L
+    def sumBaseline(): Long = {
+      var i = 0
+      var sum = 0L
       while (i < v.length) {
         sum += v(i)
         i += 1
@@ -51,22 +51,22 @@ package benchmarks {
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresBaseline () : Long = {
-      var i=0
-      var sum=0L
+    def sumOfSquaresBaseline(): Long = {
+      var i = 0
+      var sum = 0L
       while (i < v.length) {
-        sum += v(i) *  v(i)
+        sum += v(i) * v(i)
         i += 1
       }
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenBaseline () : Long = {
-      var i=0
-      var sum=0L
+    def sumOfSquaresEvenBaseline(): Long = {
+      var i = 0
+      var sum = 0L
       while (i < v.length) {
-	if (v(i) % 2 == 0)
+        if (v(i) % 2 == 0)
           sum += v(i) * v(i)
         i += 1
       }
@@ -74,27 +74,26 @@ package benchmarks {
     }
 
     @GenerateMicroBenchmark
-    def cartBaseline () : Long = {
-      var d, dp=0
-      var sum=0L
+    def cartBaseline(): Long = {
+      var d, dp = 0
+      var sum = 0L
       while (d < vHi.length) {
-	dp = 0
-	while (dp < vLo.length) {
+        dp = 0
+        while (dp < vLo.length) {
           sum += vHi(d) * vLo(dp)
-	  dp +=1 
-	}
+          dp += 1
+        }
         d += 1
       }
       sum
     }
 
-
     @GenerateMicroBenchmark
-    def refBaseline () : Int = {
-      var i=0
-      var count=0
+    def refBaseline(): Int = {
+      var i = 0
+      var count = 0
       while (i < refs.length) {
-	if (refs(i).num % 5 == 0 && refs(i).num % 7 == 0)
+        if (refs(i).num % 5 == 0 && refs(i).num % 7 == 0)
           count += 1
         i += 1
       }
@@ -102,213 +101,213 @@ package benchmarks {
     }
 
     @GenerateMicroBenchmark
-    def sumSeq () : Long = {
-      val sum : Long = v
-	.view
-	.sum
-      sum
-    }
-
-    @GenerateMicroBenchmark
-    def sumPar () : Long = {
-      val sum : Long = v
-	.par
-	.view
-	.sum
-      sum
-    }
-
-    @GenerateMicroBenchmark
-    def sumOfSquaresSeq () : Long = {
-      val sum : Long = v
+    def sumSeq(): Long = {
+      val sum: Long = v
         .view
-        .map(d => d * d)
         .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresPar () : Long = {
-      val sum : Long = v
-	.par
-	.view
-	.map(d => d * d)
-	.sum
+    def sumPar(): Long = {
+      val sum: Long = v
+        .par
+        .view
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def cartSeq () : Long = {
-      val sum : Long = vHi
-	.view
-	.flatMap(d => vLo.view.map (dp => dp * d))
-	.sum
+    def sumOfSquaresSeq(): Long = {
+      val sum: Long = v
+        .view
+        .map(d ⇒ d * d)
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def cartPar () : Long = {
-      val sum : Long = vHi
-	.par
-	.view
-	.flatMap(d => vLo.view.map (dp => dp * d))
-	.sum
+    def sumOfSquaresPar(): Long = {
+      val sum: Long = v
+        .par
+        .view
+        .map(d ⇒ d * d)
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenSeq () : Long = {
-      val res : Long = v
-	.view
-	.filter(x => x % 2 == 0)
-	.map(x => x * x)
-	.sum
+    def cartSeq(): Long = {
+      val sum: Long = vHi
+        .view
+        .flatMap(d ⇒ vLo.view.map(dp ⇒ dp * d))
+        .sum
+      sum
+    }
+
+    @GenerateMicroBenchmark
+    def cartPar(): Long = {
+      val sum: Long = vHi
+        .par
+        .view
+        .flatMap(d ⇒ vLo.view.map(dp ⇒ dp * d))
+        .sum
+      sum
+    }
+
+    @GenerateMicroBenchmark
+    def sumOfSquaresEvenSeq(): Long = {
+      val res: Long = v
+        .view
+        .filter(x ⇒ x % 2 == 0)
+        .map(x ⇒ x * x)
+        .sum
       res
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenPar () : Long = {
-      val res : Long = v
-	.par
-	.view
-	.filter(x => x % 2 == 0)
-	.map(x => x * x)
-	.sum
+    def sumOfSquaresEvenPar(): Long = {
+      val res: Long = v
+        .par
+        .view
+        .filter(x ⇒ x % 2 == 0)
+        .map(x ⇒ x * x)
+        .sum
       res
     }
 
     @GenerateMicroBenchmark
-    def sumSeqOpt () : Long = {
+    def sumSeqOpt(): Long = {
       optimize {
-	val sum : Long = v
-	  .sum
-	sum
+        val sum: Long = v
+          .sum
+        sum
       }
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresSeqOpt () : Long = {
+    def sumOfSquaresSeqOpt(): Long = {
       optimize {
-	val sum : Long = v
-	  .map(d => d * d)
-	  .sum
-	sum
+        val sum: Long = v
+          .map(d ⇒ d * d)
+          .sum
+        sum
       }
     }
 
     @GenerateMicroBenchmark
-    def cartSeqOpt () : Long = {
+    def cartSeqOpt(): Long = {
       optimize {
-	val sum : Long = vHi
-	  .flatMap(d => vLo.map (dp => dp * d))
-	  .sum
-	sum
+        val sum: Long = vHi
+          .flatMap(d ⇒ vLo.map(dp ⇒ dp * d))
+          .sum
+        sum
       }
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenSeqOpt () : Long = {
+    def sumOfSquaresEvenSeqOpt(): Long = {
       optimize {
-	val res : Long = v
-	  .filter(x => x % 2 == 0)
-	  .map(x => x * x)
-	  .sum
-	res
+        val res: Long = v
+          .filter(x ⇒ x % 2 == 0)
+          .map(x ⇒ x * x)
+          .sum
+        res
       }
     }
 
     @GenerateMicroBenchmark
-    def sumParOpt () : Long = {
+    def sumParOpt(): Long = {
       import scala.collection.par._
       import Scheduler.Implicits.global
 
-      val sum : Long = v
-	.toPar
-	.sum
+      val sum: Long = v
+        .toPar
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresParOpt () : Long = {
+    def sumOfSquaresParOpt(): Long = {
       import scala.collection.par._
       import Scheduler.Implicits.global
 
-      val sum : Long = v
-	.toPar
-	.map(d => d * d)
-	.sum
+      val sum: Long = v
+        .toPar
+        .map(d ⇒ d * d)
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def cartParOpt () : Long = {
+    def cartParOpt(): Long = {
       import scala.collection.par._
       import Scheduler.Implicits.global
 
-      val sum : Long = vHi
-	.toPar
-	.flatMap(d => vLo.map (dp => dp * d))
-	.sum
+      val sum: Long = vHi
+        .toPar
+        .flatMap(d ⇒ vLo.map(dp ⇒ dp * d))
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenParOpt () : Long = {
+    def sumOfSquaresEvenParOpt(): Long = {
       import scala.collection.par._
       import Scheduler.Implicits.global
       import scala.reflect.ClassTag // https://github.com/scala-blitz/scala-blitz/issues/34
 
-      val res : Long = v
-	  .toPar
-	  .filter(x => x % 2 == 0)
-	  .map(x => x * x)
-	  .sum
-	res
-    }
-
-    @GenerateMicroBenchmark
-    def refSeq () : Int = {
-      val res : Int = refs
-	.view
-	.filter(_.num % 5 == 0)
-	.filter(_.num % 7 == 0)
-	.size
+      val res: Long = v
+        .toPar
+        .filter(x ⇒ x % 2 == 0)
+        .map(x ⇒ x * x)
+        .sum
       res
     }
 
     @GenerateMicroBenchmark
-    def refPar () : Int = {
-      val res : Int = refs
-	.par
-	.view
-	.filter(_.num % 5 == 0)
-	.filter(_.num % 7 == 0)
-	.size
+    def refSeq(): Int = {
+      val res: Int = refs
+        .view
+        .filter(_.num % 5 == 0)
+        .filter(_.num % 7 == 0)
+        .size
       res
     }
 
     @GenerateMicroBenchmark
-    def refSeqOpt () : Int = {
+    def refPar(): Int = {
+      val res: Int = refs
+        .par
+        .view
+        .filter(_.num % 5 == 0)
+        .filter(_.num % 7 == 0)
+        .size
+      res
+    }
+
+    @GenerateMicroBenchmark
+    def refSeqOpt(): Int = {
       optimize {
-	val res : Int = refs
-	  .filter(_.num % 5 == 0)
-	  .filter(_.num % 7 == 0)
-	  .size
-	res
+        val res: Int = refs
+          .filter(_.num % 5 == 0)
+          .filter(_.num % 7 == 0)
+          .size
+        res
       }
     }
 
     @GenerateMicroBenchmark
-    def refParOpt () : Int = {
+    def refParOpt(): Int = {
       import scala.collection.par._
       import Scheduler.Implicits.global
       import scala.reflect.ClassTag // https://github.com/scala-blitz/scala-blitz/issues/34
-      
-      val res : Int = refs
-    	.toPar
-    	.filter(_.num % 5 == 0)
-    	.filter(_.num % 7 == 0)
-	.seq.size // the `size` method is not defined on the `Par` wrapper 
+
+      val res: Int = refs
+        .toPar
+        .filter(_.num % 5 == 0)
+        .filter(_.num % 7 == 0)
+        .seq.size // the `size` method is not defined on the `Par` wrapper 
       res
     }
 
@@ -348,94 +347,93 @@ package benchmarks {
       res
     }
 
-    
     ///////////////////////////////////////
     // Benchmarks without Views (strict) //
     ///////////////////////////////////////
     @GenerateMicroBenchmark
-    def sumSeq_Strict () : Long = {
-      val sum : Long = v
-	.sum
+    def sumSeq_Strict(): Long = {
+      val sum: Long = v
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumPar_Strict () : Long = {
-      val sum : Long = v
-	.par
-	.sum
+    def sumPar_Strict(): Long = {
+      val sum: Long = v
+        .par
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresSeq_Strict () : Long = {
-      val sum : Long = v
-      .map(d => d * d)
-      .sum
+    def sumOfSquaresSeq_Strict(): Long = {
+      val sum: Long = v
+        .map(d ⇒ d * d)
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresPar_Strict () : Long = {
-      val sum : Long = v
-	.par
-	.map(d => d * d)
-	.sum
+    def sumOfSquaresPar_Strict(): Long = {
+      val sum: Long = v
+        .par
+        .map(d ⇒ d * d)
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenSeq_Strict () : Long = {
-      val res : Long = v
-	.filter(x => x % 2 == 0)
-	.map(x => x * x)
-	.sum
+    def sumOfSquaresEvenSeq_Strict(): Long = {
+      val res: Long = v
+        .filter(x ⇒ x % 2 == 0)
+        .map(x ⇒ x * x)
+        .sum
       res
     }
 
     @GenerateMicroBenchmark
-    def sumOfSquaresEvenPar_Strict () : Long = {
-      val res : Long = v
-	.par
-	.filter(x => x % 2 == 0)
-	.map(x => x * x)
-	.sum
+    def sumOfSquaresEvenPar_Strict(): Long = {
+      val res: Long = v
+        .par
+        .filter(x ⇒ x % 2 == 0)
+        .map(x ⇒ x * x)
+        .sum
       res
     }
 
     @GenerateMicroBenchmark
-    def cartSeq_Strict () : Long = {
-      val sum : Long = vHi
-	.flatMap(d => vLo.map (dp => dp * d))
-	.sum
+    def cartSeq_Strict(): Long = {
+      val sum: Long = vHi
+        .flatMap(d ⇒ vLo.map(dp ⇒ dp * d))
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def cartPar_Strict () : Long = {
-      val sum : Long = vHi
-	.par
-	.flatMap(d => vLo.map (dp => dp * d))
-	.sum
+    def cartPar_Strict(): Long = {
+      val sum: Long = vHi
+        .par
+        .flatMap(d ⇒ vLo.map(dp ⇒ dp * d))
+        .sum
       sum
     }
 
     @GenerateMicroBenchmark
-    def refSeq_Strict () : Int = {
-      val res : Int = refs
-	.filter(_.num % 5 == 0)
-	.filter(_.num % 7 == 0)
-	.size
+    def refSeq_Strict(): Int = {
+      val res: Int = refs
+        .filter(_.num % 5 == 0)
+        .filter(_.num % 7 == 0)
+        .size
       res
     }
 
     @GenerateMicroBenchmark
-    def refPar_Strict () : Int = {
-      val res : Int = refs
-	.par
-	.filter(_.num % 5 == 0)
-	.filter(_.num % 7 == 0)
-	.size
+    def refPar_Strict(): Int = {
+      val res: Int = refs
+        .par
+        .filter(_.num % 5 == 0)
+        .filter(_.num % 7 == 0)
+        .size
       res
     }
   }
